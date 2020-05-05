@@ -18,10 +18,12 @@
   "homepage": "https://github.com/ViliusZur/playlist_by_weather_backend#readme",
   "dependencies": {
     "@koa/cors": "^2.2.3",
+    "dotenv": "^8.2.0",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^8.0.8",
     "nodemon": "^2.0.3",
+    "randomstring": "^1.1.5",
     "spotify-web-api-node": "^4.0.0"
   }
 }
