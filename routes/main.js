@@ -12,7 +12,7 @@ var router = Router({
 router.post("/", bodyParser(), async (ctx, next) => {
 
     const body = ctx.request.body;
-
+    console.log(body)
     // receive valence, danceability and weatherID from front end
     const valence = body.valence;
     let weatherID = body.weatherID;
