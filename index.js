@@ -10,7 +10,7 @@ app.use(cors());
 
 //import all routes
 var main = require("./routes/main.js");
-var authoriseSpotify = require("./routes/authoriseSpotify.js");
+var authoriseSpotify = require("./routes/spotify.js");
 var weather = require("./routes/weather.js");
 
 app.use(main.routes());
