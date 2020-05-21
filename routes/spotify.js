@@ -27,17 +27,17 @@ var credentials = {
 // initiate spotifyApi
 var spotifyApi = new SpotifyWebApi(credentials);
 
-// create variables for valence and energy so I could use them everywhere in this file
-let valence, energy;
+// create variables for valence so I could use them everywhere in this file
+let valence, displayValence;
 
 router.get("/authorise", bodyParser(), async (ctx, next) => {
     //gets authorisation url from which gets authorisation code
     ctx.body = "authorising";
 
     valence = ctx.request.query.valence;
-    energy = ctx.request.query.energy;
     valence = parseFloat(valence);
-    energy = parseFloat(energy);
+    displayValence = valence;
+    if(valence === 0.0) valence = 0.01; 
 
     var state = randomstring.generate();
     var authoriseURL = await authoriseSpotify.getSpotifyResponseCode(spotifyApi, state);
@@ -63,7 +63,7 @@ router.get("/refreshToken", bodyParser(), async (ctx, next) => {
 
 
 router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
-    
+
     // Get users top artists 
     let topArtists = await getUserInfo.getTopArtists(spotifyApi);
 
@@ -82,12 +82,17 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     topTracks = await createPlaylist.getTrackFeatures(spotifyApi, topTracks, topTracksIDs);
 
     // Discard songs that don't fit the mood and weather
-    topTracks = await createPlaylist.reduceByMood(topTracks, valence);
-
+    let selectedTracks = await createPlaylist.reduceByMood(topTracks, valence);
+    
+    while(selectedTracks.length != 30){
+        if(valence >= 0.96) valence -= 0.01;
+        else valence += 0.01;
+        selectedTracks = await createPlaylist.reduceByMood(topTracks, valence);
+    }
     // Create playlist
-    await createPlaylist.createPrivatePlaylist(spotifyApi, topTracks, valence);
+    let message = await createPlaylist.createPrivatePlaylist(spotifyApi, selectedTracks, displayValence);
 
-    ctx.body = "byebye";
+    ctx.response.body = message;
 });
 
 

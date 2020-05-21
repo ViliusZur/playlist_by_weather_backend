@@ -131,7 +131,9 @@ exports.createPrivatePlaylist = async (spotifyApi, topTracks, valence) => {
     await spotifyApi.addTracksToPlaylist(playlistID, topTracks)
     .then(function(data) {
         console.log('Added tracks to playlist!');
+        return ("Check your Spotify! Look for a playlist named " + playlistName);
     }, function(err) {
         console.log('Something went wrong!', err);
+        return ("There are no songs that match your mood. Try again");
     });
 };
