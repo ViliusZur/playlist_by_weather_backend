@@ -16,7 +16,7 @@ router.post("/", bodyParser(), async (ctx, next) => {
     const valence = body.valence;
 
     // redirect to authorisation page
-    ctx.response.redirect(`http://localhost:3300/Spotify/authorise?valence=${valence}`);
+    ctx.response.redirect(`https://infinite-dusk-31166.herokuapp.com/Spotify/authorise?valence=${valence}`);
 });
   
 module.exports = router;

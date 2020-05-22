@@ -51,7 +51,7 @@ router.get("/setTokens", bodyParser(), async (ctx, next) => {
     // Get code from query and set tokens
     var code = ctx.request.query.code;
     await authoriseSpotify.setSpotifyTokens(spotifyApi, code);
-    ctx.response.redirect("http://localhost:3000/loading");
+    ctx.response.redirect("https://moodyface.herokuapp.com/loading");
 });
 
 
