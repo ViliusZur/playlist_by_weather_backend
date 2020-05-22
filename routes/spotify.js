@@ -32,7 +32,6 @@ let valence, displayValence;
 
 router.get("/authorise", bodyParser(), async (ctx, next) => {
     //gets authorisation url from which gets authorisation code
-    ctx.body = "authorising";
 
     valence = ctx.request.query.valence;
     valence = parseFloat(valence);
@@ -43,7 +42,7 @@ router.get("/authorise", bodyParser(), async (ctx, next) => {
     var authoriseURL = await authoriseSpotify.getSpotifyResponseCode(spotifyApi, state);
     console.log(authoriseURL);
     // we use library "open" to open a new tab where user can log in with Spotify and authorise this app
-    open(authoriseURL);
+    ctx.body = authoriseURL;
 });
 
 
