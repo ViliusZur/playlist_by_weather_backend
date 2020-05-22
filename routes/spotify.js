@@ -63,18 +63,20 @@ router.get("/refreshToken", bodyParser(), async (ctx, next) => {
 
 
 router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
-
+    
+    if(valence === undefined) return;
+    
     // Get users top artists 
     let topArtists = await getUserInfo.getTopArtists(spotifyApi);
 
     // Get followed artists, returns an array of both top and followed artists
     let artists = await getUserInfo.getFollowedArtists(spotifyApi, topArtists);
-
+    console.log("Number of artists: ", artists.length);
     // Get an artist's top tracks for each artist in array
     let tracks = await getUserInfo.getArtistsTopTracks(spotifyApi, artists);
     let topTracks = tracks[0];
     let topTracksIDs = tracks[1];
-    
+    console.log("Number of tracks: ", topTracks.length);
     // Scramble topTracks array and assign track features to each track
     tracks = await createPlaylist.shuffleArray(topTracks, topTracksIDs);
     topTracks = tracks[0];
@@ -83,17 +85,43 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
 
     // Discard songs that don't fit the mood and weather
     let selectedTracks = await createPlaylist.reduceByMood(topTracks, valence);
-    
-    while(selectedTracks.length != 30){
-        if(valence >= 0.96) valence -= 0.01;
-        else valence += 0.01;
-        selectedTracks = await createPlaylist.reduceByMood(topTracks, valence);
+
+    // Make sure there are 30 tracks in the playlist
+    // Rise/lower the mood until you get 30
+    let newTracks = [];
+    console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
+    if(valence >= 0.96){
+        while(selectedTracks.length < 30){
+            valence -= 0.01;
+            newTracks = await createPlaylist.reduceByMood(topTracks, valence);
+            selectedTracks = arrayUnique(selectedTracks.concat(newTracks));
+            console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
+        }
+    } else{
+        while(selectedTracks.length < 30){
+            valence += 0.01;
+            newTracks = await createPlaylist.reduceByMood(topTracks, valence);
+            selectedTracks = arrayUnique(selectedTracks.concat(newTracks));
+            console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
+        }
     }
+    
     // Create playlist
     let message = await createPlaylist.createPrivatePlaylist(spotifyApi, selectedTracks, displayValence);
 
     ctx.response.body = message;
 });
 
+function arrayUnique(array) {
+    var a = array.concat();
+    for(var i=0; i<a.length; ++i) {
+        for(var j=i+1; j<a.length; ++j) {
+            if(a[i] === a[j])
+                a.splice(j--, 1);
+        }
+    }
+
+    return a;
+}
 
 module.exports = router;

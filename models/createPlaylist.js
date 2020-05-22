@@ -30,7 +30,7 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
         .then(function(data) {
             //console.log(data.body);
             trackFeatures[topTracks[i]] = [ data.body.danceability, data.body.energy, data.body.valence ];
-        }, function(err) {
+        }, function() {
             // the only error I've been getting is 429 'Too many requests', so I reduce i to try again
             i--;
         });
@@ -115,16 +115,16 @@ exports.createPrivatePlaylist = async (spotifyApi, topTracks, valence) => {
     await spotifyApi.getMe()
     .then(function(data) {
         userID = data.body.id;
-    }, function(err) {
-        console.log('Something went wrong!', err);
+    }, function() {
+        console.log('Error in getting user data (user id)!');
     });
 
     // create playlist
     await spotifyApi.createPlaylist(userID, playlistName, { 'public' : true })
     .then(function(data) {
         playlistID = data.body.id;
-    }, function(err) {
-        console.log('Something went wrong!', err);
+    }, function() {
+        console.log('Error in creating a playlist!');
     });
 
     // Add tracks to a playlist
@@ -132,8 +132,8 @@ exports.createPrivatePlaylist = async (spotifyApi, topTracks, valence) => {
     .then(function(data) {
         console.log('Added tracks to playlist!');
         return ("Check your Spotify! Look for a playlist named " + playlistName);
-    }, function(err) {
-        console.log('Something went wrong!', err);
+    }, function() {
+        console.log('Error in adding songs to the playlist!');
         return ("There are no songs that match your mood. Try again");
     });
 };
