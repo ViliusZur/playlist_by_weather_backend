@@ -28,8 +28,8 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs, ctx) => {
     for(let i = 0; i < topTracks.length; i++){
 
         // respond with a bland space and 202 to delay timeout by 30s
-        if (!ctx.response.headersSent) ctx.response.writeHead(202);
-        ctx.response.write(" ");
+        if (!ctx.response.headersSent) ctx.status = 202;
+        ctx.response.message = " ";
 
         await spotifyApi.getAudioFeaturesForTrack(topTracksIDs[i])
         .then(function(data) {

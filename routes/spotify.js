@@ -73,8 +73,8 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     console.log("Number of artists: ", artists.length);
 
     // respond with a bland space and 202 to delay timeout by 30s
-    if (!ctx.response.headersSent) ctx.response.writeHead(202);
-    ctx.response.write(" ");
+    if (!ctx.response.headersSent) ctx.status = 202;
+    ctx.response.message = " ";
 
     // Get an artist's top tracks for each artist in array
     let tracks = await getUserInfo.getArtistsTopTracks(spotifyApi, artists, ctx);
@@ -83,8 +83,8 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     console.log("Number of tracks: ", topTracks.length);
 
     // respond with a bland space and 202 to delay timeout by 30s
-    if (!ctx.response.headersSent) ctx.response.writeHead(202);
-    ctx.response.write(" ");
+    if (!ctx.response.headersSent) ctx.status = 202;
+    ctx.response.message = " ";
 
     // Scramble topTracks array and assign track features to each track
     tracks = await createPlaylist.shuffleArray(topTracks, topTracksIDs);
@@ -116,8 +116,8 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     }
     
     // respond with a bland space and 202 to delay timeout by 30s
-    if (!ctx.response.headersSent) ctx.response.writeHead(202);
-    ctx.response.write(" ");
+    if (!ctx.response.headersSent) ctx.status = 202;
+    ctx.response.message = " ";
 
     // Create playlist
     let message = await createPlaylist.createPrivatePlaylist(spotifyApi, selectedTracks, displayValence);
