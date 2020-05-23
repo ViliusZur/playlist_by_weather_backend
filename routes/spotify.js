@@ -72,25 +72,17 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     let artists = await getUserInfo.getFollowedArtists(spotifyApi, topArtists);
     console.log("Number of artists: ", artists.length);
 
-    // respond with a bland space and 202 to delay timeout by 30s
-    if (!ctx.response.headersSent) ctx.status = 202;
-    ctx.body += " ";
-
     // Get an artist's top tracks for each artist in array
-    let tracks = await getUserInfo.getArtistsTopTracks(spotifyApi, artists, ctx);
+    let tracks = await getUserInfo.getArtistsTopTracks(spotifyApi, artists);
     let topTracks = tracks[0];
     let topTracksIDs = tracks[1];
     console.log("Number of tracks: ", topTracks.length);
-
-    // respond with a bland space and 202 to delay timeout by 30s
-    if (!ctx.response.headersSent) ctx.status = 202;
-    ctx.body += " ";
 
     // Scramble topTracks array and assign track features to each track
     tracks = await createPlaylist.shuffleArray(topTracks, topTracksIDs);
     topTracks = tracks[0];
     topTracksIDs = tracks[1];
-    topTracks = await createPlaylist.getTrackFeatures(spotifyApi, topTracks, topTracksIDs, ctx);
+    topTracks = await createPlaylist.getTrackFeatures(spotifyApi, topTracks, topTracksIDs);
 
     // Discard songs that don't fit the mood and weather
     let selectedTracks = await createPlaylist.reduceByMood(topTracks, valence);
@@ -114,10 +106,6 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
             console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
         }
     }
-    
-    // respond with a bland space and 202 to delay timeout by 30s
-    if (!ctx.response.headersSent) ctx.status = 202;
-    ctx.body += " ";
 
     // Create playlist
     let message = await createPlaylist.createPrivatePlaylist(spotifyApi, selectedTracks, displayValence);
