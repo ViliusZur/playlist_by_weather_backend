@@ -5,7 +5,7 @@ var Router = require("koa-router");
 var bodyParser = require("koa-bodyparser");
 var SpotifyWebApi = require('spotify-web-api-node');
 var randomstring = require("randomstring");
-var delayed = new DelayedResponse(req, res);
+var DelayedResponse = require("http-delayed-response");
 
 // import models
 var authoriseSpotify = require("../models/authoriseSpotify");
@@ -66,6 +66,7 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     if(valence === undefined) return;
     
     // delay the response
+    var delayed = new DelayedResponse(req, res);
     delayed.start();
 
     // Get users top artists 
