@@ -5,7 +5,7 @@ var Router = require("koa-router");
 var bodyParser = require("koa-bodyparser");
 var SpotifyWebApi = require('spotify-web-api-node');
 var randomstring = require("randomstring");
-var open = require("open");
+var delayed = new DelayedResponse(req, res);
 
 // import models
 var authoriseSpotify = require("../models/authoriseSpotify");
@@ -41,7 +41,7 @@ router.get("/authorise", bodyParser(), async (ctx, next) => {
     var state = randomstring.generate();
     var authoriseURL = await authoriseSpotify.getSpotifyResponseCode(spotifyApi, state);
     console.log(authoriseURL);
-    // we use library "open" to open a new tab where user can log in with Spotify and authorise this app
+    
     ctx.body = authoriseURL;
 });
 
@@ -65,12 +65,16 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     
     if(valence === undefined) return;
     
+    // delay the response
+    delayed.start();
+
     // Get users top artists 
     let topArtists = await getUserInfo.getTopArtists(spotifyApi);
 
     // Get followed artists, returns an array of both top and followed artists
     let artists = await getUserInfo.getFollowedArtists(spotifyApi, topArtists);
     console.log("Number of artists: ", artists.length);
+
     // Get an artist's top tracks for each artist in array
     let tracks = await getUserInfo.getArtistsTopTracks(spotifyApi, artists);
     let topTracks = tracks[0];

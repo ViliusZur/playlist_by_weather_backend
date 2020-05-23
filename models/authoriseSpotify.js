@@ -6,7 +6,7 @@ exports.getSpotifyResponseCode = async (spotifyApi, state) => {
     var scopes = ["user-library-read", "user-top-read", "playlist-modify-public", "user-follow-read"];
 
     var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
-
+    console.log(authorizeURL);
     return authorizeURL;
 };
 

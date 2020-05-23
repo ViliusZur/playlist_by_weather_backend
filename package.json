@@ -20,6 +20,7 @@
   "dependencies": {
     "@koa/cors": "^2.2.3",
     "dotenv": "^8.2.0",
+    "http-delayed-response": "0.0.4",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^8.0.8",
