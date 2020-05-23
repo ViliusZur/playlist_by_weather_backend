@@ -52,7 +52,7 @@ exports.getArtistsTopTracks = async (spotifyApi, artists, ctx) => {
 
         // respond with a bland space and 202 to delay timeout by 30s
         if (!ctx.response.headersSent) ctx.status = 202;
-        ctx.response.message += " ";
+        ctx.body += " ";
 
         pass = false;
         while(pass === false){
