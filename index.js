@@ -7,6 +7,7 @@ var bodyParser = require("koa-bodyparser");
 var app = new Koa();
 
 app.use(cors());
+app.use(bodyParser());
 
 //import all routes
 var main = require("./routes/main.js");
