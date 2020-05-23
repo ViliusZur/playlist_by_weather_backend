@@ -61,12 +61,12 @@ router.get("/refreshToken", bodyParser(), async (ctx, next) => {
 });
 
 
-router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
+router.get("/createPlaylist", bodyParser(), async (req, res, next) => {
     
     if(valence === undefined) return;
     
     // delay the response
-    var delayed = new DelayedResponse(ctx.request, ctx.response);
+    var delayed = new DelayedResponse(req, res);
     delayed.start();
 
     // Get users top artists 
@@ -113,7 +113,7 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     // Create playlist
     let message = await createPlaylist.createPrivatePlaylist(spotifyApi, selectedTracks, displayValence);
 
-    ctx.response.body = message;
+    res.body = message;
 });
 
 function arrayUnique(array) {
