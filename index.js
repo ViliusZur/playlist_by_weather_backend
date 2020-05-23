@@ -3,10 +3,12 @@
 var Koa = require("koa");
 const cors = require("@koa/cors");
 var bodyParser = require("koa-bodyparser");
+var delayed = require("http-delayed-response");
 
 var app = new Koa();
 
 app.use(cors());
+app.use(delayed);
 
 //import all routes
 var main = require("./routes/main.js");
