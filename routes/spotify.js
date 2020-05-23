@@ -64,10 +64,6 @@ router.get("/refreshToken", bodyParser(), async (ctx, next) => {
 router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     
     if(valence === undefined) return;
-    
-    // delay the response
-    var delayed = new DelayedResponse(ctx.request, ctx.response);
-    delayed.start();
 
     // Get users top artists 
     let topArtists = await getUserInfo.getTopArtists(spotifyApi);
