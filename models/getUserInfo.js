@@ -40,7 +40,7 @@ exports.getFollowedArtists = async (spotifyApi, artists) => {
     return artists;
 };
 
-exports.getArtistsTopTracks = async (spotifyApi, artists) => {
+exports.getArtistsTopTracks = async (spotifyApi, artists, ctx) => {
     // Retrieve artists top tracks
 
     let topTracks = [];
@@ -49,6 +49,11 @@ exports.getArtistsTopTracks = async (spotifyApi, artists) => {
 
     for (let index in artists) {
         // iterate through all artists
+
+        // respond with a bland space and 202 to delay timeout by 30s
+        if (!ctx.response.headersSent) ctx.response.writeHead(202);
+        ctx.response.write(" ");
+
         pass = false;
         while(pass === false){
             await spotifyApi.getArtistTopTracks(artists[index], "GB")

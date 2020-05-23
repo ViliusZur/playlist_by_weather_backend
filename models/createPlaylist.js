@@ -20,12 +20,17 @@ exports.shuffleArray = async (topTracks, topTracksIDs) => {
     return [ topTracks, topTracksIDs ];
 };
 
-exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
+exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs, ctx) => {
     // Retrieves track features (danceability, energy, valence) from Spotify API
     
     let trackFeatures = {};
 
     for(let i = 0; i < topTracks.length; i++){
+
+        // respond with a bland space and 202 to delay timeout by 30s
+        if (!ctx.response.headersSent) ctx.response.writeHead(202);
+        ctx.response.write(" ");
+
         await spotifyApi.getAudioFeaturesForTrack(topTracksIDs[i])
         .then(function(data) {
             //console.log(data.body);
