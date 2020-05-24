@@ -26,7 +26,6 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
     let trackFeatures = {};
 
     for(let i = 0; i < topTracks.length; i++){
-
         await spotifyApi.getAudioFeaturesForTrack(topTracksIDs[i])
         .then(function(data) {
             //console.log(data.body);

@@ -84,10 +84,18 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     if(topTracks.length === 0) return;
 
     // Scramble topTracks array and assign track features to each track
+    console.log("started shuffling array and getting track features");
+
     tracks = await createPlaylist.shuffleArray(topTracks, topTracksIDs);
     topTracks = tracks[0];
     topTracksIDs = tracks[1];
+
+    console.log("finished shuffling");
+    console.log("starting getting features. topTracksIDs.length: ", topTracksIDs.length);
+
     topTracks = await createPlaylist.getTrackFeatures(spotifyApi, topTracks, topTracksIDs);
+
+    console.log("get track features completed. topTracks.length: ", topTracks.length);
 
     // Discard songs that don't fit the mood and weather
     let selectedTracks = await createPlaylist.reduceByMood(topTracks, valence);
@@ -95,7 +103,9 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     // Make sure there are 30 tracks in the playlist
     // Rise/lower the mood until you get 30
     let newTracks = [];
+
     console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
+    
     if(valence >= 0.90){
         while(selectedTracks.length < 30 && valence >= 0.00){
             valence -= 0.01;
