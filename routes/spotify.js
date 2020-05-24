@@ -81,6 +81,8 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     let topTracksIDs = tracks[1];
     console.log("Number of tracks: ", topTracks.length);
 
+    if(topTracks.length === 0) return;
+
     // Scramble topTracks array and assign track features to each track
     tracks = await createPlaylist.shuffleArray(topTracks, topTracksIDs);
     topTracks = tracks[0];
@@ -94,19 +96,27 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     // Rise/lower the mood until you get 30
     let newTracks = [];
     console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
-    if(valence >= 0.96){
-        while(selectedTracks.length < 30){
+    if(valence >= 0.90){
+        while(selectedTracks.length < 30 && valence >= 0.00){
             valence -= 0.01;
             newTracks = await createPlaylist.reduceByMood(topTracks, valence);
             selectedTracks = arrayUnique(selectedTracks.concat(newTracks));
             console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
         }
     } else{
-        while(selectedTracks.length < 30){
+        while(selectedTracks.length < 30 && valence <= 1.00){
             valence += 0.01;
             newTracks = await createPlaylist.reduceByMood(topTracks, valence);
             selectedTracks = arrayUnique(selectedTracks.concat(newTracks));
             console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
+        }
+        if(selectedTracks.length < 30){
+            while(selectedTracks.length < 30 && valence >= 0.00){
+                valence -= 0.01;
+                newTracks = await createPlaylist.reduceByMood(topTracks, valence);
+                selectedTracks = arrayUnique(selectedTracks.concat(newTracks));
+                console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
+            }   
         }
     }
 
