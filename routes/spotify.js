@@ -81,8 +81,6 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     let topTracksIDs = tracks[1];
     console.log("Number of tracks: ", topTracks.length);
 
-    if(topTracks.length === 0) return;
-
     // Scramble topTracks array and assign track features to each track
     console.log("started shuffling array and getting track features");
 
@@ -105,7 +103,7 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     let newTracks = [];
 
     console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
-    
+
     if(valence >= 0.90){
         while(selectedTracks.length < 30 && valence >= 0.00){
             valence -= 0.01;
