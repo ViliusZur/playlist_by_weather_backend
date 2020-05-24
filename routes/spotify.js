@@ -63,6 +63,9 @@ router.get("/refreshToken", bodyParser(), async (ctx, next) => {
 
 router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     
+    // set a new timeout of 5 minutes
+    ctx.request.socket.setTimeout(5 * 60 * 1000); 
+
     if(valence === undefined) return;
 
     // Get users top artists 
