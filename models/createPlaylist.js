@@ -29,7 +29,7 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
     .then(function(data) {
         console.log(data.body);
     }, function(err) {
-        done(err);
+        console.log("error in getting track features", err);
     });
 
 
