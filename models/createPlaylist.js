@@ -29,9 +29,11 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
 
         await spotifyApi.getAudioFeaturesForTracks(topTracksIDs.slice(i, j))
         .then(function(data) {
+            console.log("data.body.audio_features_length: ", data.body.audio_features.length);
             for(let u = 0; u < data.body.audio_features.length; u++){
                 trackFeatures[topTracks[i + u]] = [ data.body.audio_features.danceability, data.body.audio_features.energy, data.body.audio_features.valence ];
             }
+            console.log("trackFeatures.length: ", trackFeatures.lenght);
         }, function(err) {
             console.log("error in getting track features", err);
         });
@@ -51,7 +53,7 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
             i--;
         });
     }*/
-    
+    console.log("final trackFeatures.length: ", trackFeatures.lenght);
     return trackFeatures;
 };
 
