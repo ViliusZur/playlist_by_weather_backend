@@ -24,14 +24,19 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
     // Retrieves track features (danceability, energy, valence) from Spotify API
     
     let trackFeatures = {};
+    let j = 100;
+    for(let i = 0; i < topTracks.lenght; i = i + 100){
 
-    spotifyApi.getAudioFeaturesForTracks(topTracksIDs.slice(0, 100))
-    .then(function(data) {
-        console.log(data.body);
-    }, function(err) {
-        console.log("error in getting track features", err);
-    });
-
+        await spotifyApi.getAudioFeaturesForTracks(topTracksIDs.slice(i, j))
+        .then(function(data) {
+            for(let u = 0; u < data.body.audio_features.length; u++){
+                trackFeatures[topTracks[i + u]] = [ data.body.audio_features.danceability, data.body.audio_features.energy, data.body.audio_features.valence ];
+            }
+        }, function(err) {
+            console.log("error in getting track features", err);
+        });
+        j = i;
+    }
 
     /*for(let i = 0; i < topTracks.length; i++){
         

@@ -93,7 +93,7 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
 
     topTracks = await createPlaylist.getTrackFeatures(spotifyApi, topTracks, topTracksIDs);
 
-    console.log("get track features completed. topTracks.length: ", topTracks.length);
+    console.log("track features completed. topTracks.length: ", topTracks.length);
 
     // Discard songs that don't fit the mood and weather
     let selectedTracks = await createPlaylist.reduceByMood(topTracks, valence);
