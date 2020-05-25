@@ -40,20 +40,6 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
         j = j + 100;
     }
 
-    /*for(let i = 0; i < topTracks.length; i++){
-        
-        await spotifyApi.getAudioFeaturesForTrack(topTracksIDs[i])
-        .then(function(data) {
-            //console.log(data.body);
-            console.log("inside track features. i: ", i, " features: ", data.body.danceability, data.body.energy, data.body.valence);
-            trackFeatures[topTracks[i]] = [ data.body.danceability, data.body.energy, data.body.valence ];
-        }, function() {
-            // the only error I've been getting is 429 'Too many requests', so I reduce i to try again
-            console.log("error in track features with track ", i);
-            i--;
-        });
-    }*/
-    console.log("final trackFeatures.length: ", trackFeatures.length);
     return trackFeatures;
 };
 
