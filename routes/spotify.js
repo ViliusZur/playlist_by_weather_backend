@@ -106,21 +106,21 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
 
     if(valence >= 0.90){
         while(selectedTracks.length < 30 && valence >= 0.00){
-            valence -= 0.01;
+            valence -= 0.05;
             newTracks = await createPlaylist.reduceByMood(topTracks, valence);
             selectedTracks = arrayUnique(selectedTracks.concat(newTracks));
             console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
         }
     } else{
         while(selectedTracks.length < 30 && valence <= 1.00){
-            valence += 0.01;
+            valence += 0.05;
             newTracks = await createPlaylist.reduceByMood(topTracks, valence);
             selectedTracks = arrayUnique(selectedTracks.concat(newTracks));
             console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
         }
         if(selectedTracks.length < 30){
             while(selectedTracks.length < 30 && valence >= 0.00){
-                valence -= 0.01;
+                valence -= 0.05;
                 newTracks = await createPlaylist.reduceByMood(topTracks, valence);
                 selectedTracks = arrayUnique(selectedTracks.concat(newTracks));
                 console.log("Mood and number of selected tracks: ", valence, selectedTracks.length);
