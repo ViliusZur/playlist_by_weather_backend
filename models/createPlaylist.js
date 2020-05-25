@@ -25,7 +25,7 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
     
     let trackFeatures = {};
     let j = 100;
-    for(let i = 0; i < topTracks.lenght; i = i + 100){
+    for(let i = 0; i < topTracks.length; i = i + 100){
         console.log(i);
         await spotifyApi.getAudioFeaturesForTracks(topTracksIDs.slice(i, j))
         .then(function(data) {
@@ -33,7 +33,7 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
             for(let u = 0; u < data.body.audio_features.length; u++){
                 trackFeatures[topTracks[i + u]] = [ data.body.audio_features.danceability, data.body.audio_features.energy, data.body.audio_features.valence ];
             }
-            console.log("trackFeatures.length: ", trackFeatures.lenght);
+            console.log("trackFeatures.length: ", trackFeatures.length);
         }, function(err) {
             console.log("error in getting track features", err);
         });
@@ -53,7 +53,7 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
             i--;
         });
     }*/
-    console.log("final trackFeatures.length: ", trackFeatures.lenght);
+    console.log("final trackFeatures.length: ", trackFeatures.length);
     return trackFeatures;
 };
 
