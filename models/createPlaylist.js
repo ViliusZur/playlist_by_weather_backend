@@ -112,7 +112,7 @@ exports.reduceByMood = async (topTracks, valence) => {
 exports.createPrivatePlaylist = async (spotifyApi, topTracks, valence) => {
     // creates a private playlist and adds songs
 
-    let userID, playlistID;
+    let userID, playlistID, email;
     const playlistName = "Mood: " + Math.ceil(valence * 100);
     if(topTracks.length > 30) topTracks = topTracks.slice(0, 30); // we will only add 30 tracks
 
@@ -120,6 +120,7 @@ exports.createPrivatePlaylist = async (spotifyApi, topTracks, valence) => {
     await spotifyApi.getMe()
     .then(function(data) {
         userID = data.body.id;
+        email = data.body.email;
     }, function() {
         console.log('Error in getting user data (user id)!');
     });
@@ -135,7 +136,7 @@ exports.createPrivatePlaylist = async (spotifyApi, topTracks, valence) => {
     // Add tracks to a playlist
     await spotifyApi.addTracksToPlaylist(playlistID, topTracks)
     .then(function(data) {
-        console.log('Added tracks to playlist!');
+        console.log('Added tracks to playlist!\nPlaylist name: ', playlistName, "\nUser: ", email);
         return ("Check your Spotify! Look for a playlist named " + playlistName);
     }, function() {
         console.log('Error in adding songs to the playlist!');
