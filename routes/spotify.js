@@ -49,8 +49,8 @@ router.get("/authorise", bodyParser(), async (ctx, next) => {
 router.get("/setTokens", bodyParser(), async (ctx, next) => {
     // Get code from query and set tokens
     var code = ctx.request.query.code;
-    await authoriseSpotify.setSpotifyTokens(spotifyApi, code);
-    ctx.response.redirect("https://moodyface.herokuapp.com/loading");
+    var tokens = await authoriseSpotify.setSpotifyTokens(spotifyApi, code);
+    ctx.response.redirect(`https://moodyface.herokuapp.com/loading/#AT=${tokens[0]}&RT=${tokens[1]}`);
 });
 
 
@@ -66,17 +66,23 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     // set a new timeout of 5 minutes
     ctx.request.socket.setTimeout(5 * 60 * 1000); 
 
+    // get tokens from query and set them
+    var loggedinSpotify = new SpotifyWebApi();
+    loggedinSpotify.setAccessToken(ctx.request.query.accessToken);
+    loggedinSpotify.setRefreshToken(ctx.request.query.refreshToken);
+
+
     if(valence === undefined) return;
 
     // Get users top artists 
-    let topArtists = await getUserInfo.getTopArtists(spotifyApi);
+    let topArtists = await getUserInfo.getTopArtists(loggedinSpotify);
 
     // Get followed artists, returns an array of both top and followed artists
-    let artists = await getUserInfo.getFollowedArtists(spotifyApi, topArtists);
+    let artists = await getUserInfo.getFollowedArtists(loggedinSpotify, topArtists);
     console.log("Number of artists: ", artists.length);
 
     // Get an artist's top tracks for each artist in array
-    let tracks = await getUserInfo.getArtistsTopTracks(spotifyApi, artists);
+    let tracks = await getUserInfo.getArtistsTopTracks(loggedinSpotify, artists);
     let topTracks = tracks[0];
     let topTracksIDs = tracks[1];
     console.log("Number of tracks: ", topTracks.length);
@@ -91,7 +97,7 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     console.log("finished shuffling");
     console.log("starting getting features. topTracksIDs.length: ", topTracksIDs.length);
 
-    topTracks = await createPlaylist.getTrackFeatures(spotifyApi, topTracks, topTracksIDs);
+    topTracks = await createPlaylist.getTrackFeatures(loggedinSpotify, topTracks, topTracksIDs);
 
     // Discard songs that don't fit the mood and weather
     let selectedTracks = await createPlaylist.reduceByMood(topTracks, valence);
@@ -127,7 +133,7 @@ router.get("/createPlaylist", bodyParser(), async (ctx, next) => {
     }
 
     // Create playlist
-    let message = await createPlaylist.createPrivatePlaylist(spotifyApi, selectedTracks, displayValence);
+    let message = await createPlaylist.createPrivatePlaylist(loggedinSpotify, selectedTracks, displayValence);
 
     ctx.body = message;
 });

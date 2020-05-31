@@ -37,6 +37,8 @@ exports.getTrackFeatures = async (spotifyApi, topTracks, topTracksIDs) => {
             }
         }, function(err) {
             console.log("error in getting track features", err);
+            i = i - 100;
+            j = j - 100;
         });
         j = j + 100;
     }

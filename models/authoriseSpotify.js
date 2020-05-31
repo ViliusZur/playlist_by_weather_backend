@@ -13,17 +13,18 @@ exports.getSpotifyResponseCode = async (spotifyApi, state) => {
 exports.setSpotifyTokens = async (spotifyApi, code) => {
     // Retrieve an access token and a refresh token
 
+    let accessToken, refreshToken;
+
     await spotifyApi.authorizationCodeGrant(code).then(
         function(data) {
-            // Set the access token on the API object to use it in later calls
-            spotifyApi.setAccessToken(data.body['access_token']);
-            spotifyApi.setRefreshToken(data.body['refresh_token']);
-
+            accessToken = data.body['access_token'];
+            refreshToken = data.body['refresh_token'];
         },
         function(err) {
             console.log('Something went wrong!', err);
         }
     );
+    return [accessToken, refreshToken];
 };
 
 exports.refreshToken = async (spotifyApi) => {
